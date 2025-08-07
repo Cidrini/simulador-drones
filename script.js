@@ -9,10 +9,14 @@ class Pedido {
   }
 
   // Distância até o cliente (ida e volta)
-  calcularDistancia() {
+  calcularDistancia(x, y) {
     return Math.sqrt(this.x ** 2 + this.y ** 2) * 2;
   }
 }
+
+function calcularDistanciaSolo(x, y) {
+    return Math.sqrt(x ** 2 + y ** 2) * 2;
+  }
 
 // Classe que representa uma Viagem
 class Viagem {
@@ -92,9 +96,17 @@ form.addEventListener("submit", function (e) {
   const peso = parseFloat(document.getElementById("peso").value);
   const prioridade = document.getElementById("prioridade").value;
 
-  if (isNaN(x) || isNaN(y) || isNaN(peso) || peso <= 0) {
-    alert("Preencha todos os campos corretamente com valores válidos.");
-    return;
+  if (isNaN(x) || isNaN(y) || isNaN(peso)) {
+    return alert("Preencha todos os campos corretamente: Distância e/ou peso não é um número.");
+  }
+
+  if(peso <= 0 || peso > 10){
+    return alert("Preencha todos os campos corretamente: O peso do pedido não pode ser 0 ou maior que 10.");
+  }
+
+  const distanciaKm = calcularDistanciaSolo(x, y);
+  if (distanciaKm > 20){
+    return alert("Distância máxima ultrapassada: Mais de 20km");
   }
 
   const novoPedido = new Pedido(contadorPedidos++, x, y, peso, prioridade);
@@ -107,13 +119,15 @@ form.addEventListener("submit", function (e) {
 // Executar a simulação
 
 document.getElementById("executarBtn").addEventListener("click", () => {
+  if (pedidos.length == 0){
+    return alert("Adicione pedidos antes de fazer uma simulação.");
+  }
   resultadoDiv.innerHTML = "";
   resumoDiv.innerHTML = "";
 
   const qtdDrones = parseInt(document.getElementById("quantidadeDrones").value);
   if (isNaN(qtdDrones) || qtdDrones < 1) {
     alert("Insira uma quantidade válida de drones.");
-    return;
   }
 
   // Criar drones
